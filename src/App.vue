@@ -1,12 +1,12 @@
 <script setup>
+import Tile from './components/Tile.vue';
 
 </script>
 
-<template>
-  <p>template</p>
-  <p>test<p/>    
+<template>  
+     
+<Tile/>
 </template>
-
 <style scoped>
 
 </style>
