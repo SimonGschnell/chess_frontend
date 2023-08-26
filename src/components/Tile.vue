@@ -47,9 +47,9 @@ function dragstartFun(e) {
 
 <template>
   <!-- this component is responsible to represent a tile on a chess board @dragend="dragEvent"-->
-  <div class="tile">
-    <span
-    :class="tileClasses"
+  <div :class="tileClasses" class="tile">
+    <div
+    style="background: transparent;"
     :id="idValue"
       @drop="dropFun"
       @dragstart="dragstartFun"
@@ -58,7 +58,7 @@ function dragstartFun(e) {
       @dragleave="dragleaveFun"
       draggable="true"
       ><slot></slot
-    ></span>
+    ></div>
     
   </div>
 </template>

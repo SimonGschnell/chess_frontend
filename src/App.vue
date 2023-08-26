@@ -1,20 +1,25 @@
 <script setup>
 import Tile from './components/Tile.vue';
+import {ref} from 'vue'
 
-const pieces=[{symbol:"♔",id:"a1"}, {symbol:"♗",id:"a2"}, {symbol:"♟︎",id:"a3"},]
-function fromFun(id){
+const from= ref("")
+const to= ref("")
+const pieces=[{symbol:"d",id:"a1"}, {symbol:"♗",id:"a2"}, {symbol:"♟︎",id:"a3"},]
+function fromFun(id){//♔
 console.log(id)
+from.value = id
 }
 function toFun(id){
     console.log(id)
-
+    to.value=id
 
 }
 </script>
 
 <template>  
-     
-<Tile v-for="ele in pieces" :idValue="ele.id" :key="ele.id" @from="fromFun" @to="toFun">{{ ele.symbol }}</Tile>
+     <p>from: {{ from }}</p>
+     <p>to: {{ to }}</p>
+<Tile v-for="ele in pieces" :idValue="ele.id" :key="ele.id" @from="fromFun" @to="toFun"><div style="background: transparent;">{{ ele.symbol }}</div></Tile>
 
 <!--
   <Tile @from="fromFun" @to="toFun">♗</Tile>
