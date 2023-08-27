@@ -16,6 +16,7 @@ function dragEvent(e) {
 function dropFun(e) {
   e.preventDefault();
   emit("to", e.target.id);
+  console.log(e.target.id);
   tileClasses.value.pop();
 
 }
@@ -42,6 +43,7 @@ function dragendFun(e) {
 function dragstartFun(e) {
   
   emit("from", e.target.id);
+
 }
 </script>
 
