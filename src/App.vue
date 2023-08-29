@@ -1,6 +1,17 @@
 <script setup>
 import Tile from './components/Tile.vue';
-import {ref} from 'vue'
+import {ref, watchEffect} from 'vue'
+
+watchEffect(async ()=>{
+  const url = "http://127.0.0.1:8080/print"
+  fetch(url).then((res)=>{
+  return res.json()
+  })
+  .then(json=>{
+    console.log(json)
+  })
+  .catch(err=>{console.error(err)})
+})
 
 const from= ref("")
 const to= ref("")
