@@ -11,11 +11,7 @@ onBeforeMount(async () => {
 
 const from = ref("");
 const to = ref("");
-const pieces = [
-  { symbol: "♔", id: "a1" },
-  { symbol: "♗", id: "a2" },
-  { symbol: "♟︎", id: "a3" },
-];
+
 function fromFun(id) {
   console.log(id);
   from.value = id;
@@ -92,6 +88,7 @@ async function resetBoard(){
       v-for="ele in row"
       :ele_symbol="ele.symbol"
       :field_color="ele.field_color"
+      :piece_color="ele.piece_color"
       :idValue="ele.col + ele.row"
       :key="ele.col + ele.row"
       @from="fromFun"

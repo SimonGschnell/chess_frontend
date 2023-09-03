@@ -7,6 +7,7 @@ const props = defineProps({
   idValue: String,
   field_color: String,
   ele_symbol:String,
+  piece_color:String,
 });
 
 const tileClasses = ref([""]);
@@ -54,6 +55,7 @@ function dragstartFun(e) {
       dragover: tileClasses.includes('dragover'),
       tile: true,
       black_tile: field_color == 'BLACK',
+      white_piece: piece_color == 'WHITE',
     }"
     
     @drop="dropFun" :draggable="ele_symbol.length>0" @dragstart="dragstartFun"
@@ -79,6 +81,10 @@ function dragstartFun(e) {
 .black_tile {
   background-color: grey;
   
+}
+
+.white_piece {
+  color :rgb(192, 192, 192);
 }
 
 .dragover {
