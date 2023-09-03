@@ -27,33 +27,41 @@ function toFun(id) {
 
 async function getBoard() {
   const url = "http://127.0.0.1:8080/board";
-  fetch(url)
-    .then((res) => {
-      return res.json();
-    })
-    .then((json) => {
-      console.log(json);
-      //player_turn.value = json.player_turn
-      board.value = json;
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  try {
+    let res = await fetch(url);
+    let json = await res.json();
+    console.log(json);
+    board.value = json;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 async function updateBoard(from, to) {
   const url = `http://127.0.0.1:8080/move/${from}/${to}`;
-  fetch(url)
-    .then((res) => res.json())
-    .then((json) => {
-      console.log(json);
-      if (json == "success") {
-        getBoard();
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  try {
+    let res = await fetch(url);
+    let json = await res.json();
+    console.log(json);
+    if (json == "success") {
+      getBoard();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function resetBoard(){
+  const url = "http://127.0.0.1:8080/reset";
+  try {
+    let res = await fetch(url);
+    let json = await res.json();
+    if (json == "success") {
+      getBoard();
+    }
+  } catch (err) {
+    console.error(err);
+  }
 }
 </script>
 
@@ -71,7 +79,7 @@ async function updateBoard(from, to) {
       ><button
         style="background-color: lightcoral"
         class="btn"
-        @click="console.log('to be implemented')"
+        @click="resetBoard"
       >
         reset
       </button>
@@ -98,5 +106,6 @@ async function updateBoard(from, to) {
   height: 50px;
   border: 1px solid black;
   margin-right: 1em;
+  cursor: pointer;
 }
 </style>
