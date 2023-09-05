@@ -2,16 +2,16 @@
 import Tile from "./Tile.vue";
 import { ref, watchEffect, onBeforeMount } from "vue";
 
+const from = ref("");
+const to = ref("");
 const player_turn = ref(null);
 const board = ref(null);
+const check = ref("");
+const error_message = ref("");
 
 onBeforeMount(async () => {
   await getBoard();
 });
-
-const from = ref("");
-const to = ref("");
-const check = ref("");
 
 function fromFun(id) {
   console.log(id);
@@ -43,7 +43,7 @@ async function getBoard() {
     }
     
   } catch (err) {
-    console.log(err);
+    error_message.value = err;
   }
 }
 
@@ -53,7 +53,7 @@ async function updateBoard(from, to) {
   try {
     let res = await fetch(url_move);
     let json = await res.json();
-    console.log(json);
+    error_message.value = json;
 
     let res_checkmate = await fetch(url_checkmate);
     let json_checkmate = await res_checkmate.json();
@@ -65,7 +65,7 @@ async function updateBoard(from, to) {
       getBoard()
     }
   } catch (err) {
-    console.error(err);
+    error_message.value = err;
   }
 }
 
@@ -78,7 +78,7 @@ async function resetBoard(){
       getBoard();
     }
   } catch (err) {
-    console.error(err);
+    error_message.value = err;
   }
 }
 </script>
@@ -120,6 +120,7 @@ async function resetBoard(){
       
   </div>
   <p style="color: red;">{{ check?"CHECK":"" }}</p>
+  <p :style="error_message=='success'?'color: green;':'color: red;'">{{ error_message }}</p>
 </template>
 <style scoped>
 .btn {
