@@ -93,6 +93,7 @@ function dragstartFun(e) {
 }
 
 .gettigDragged {
+  border : solid 1px black !important;
   background-color: lightgreen!important;
 }
 </style>

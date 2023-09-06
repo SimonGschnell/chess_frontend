@@ -9,6 +9,8 @@ const board = ref(null);
 const check = ref("");
 const error_message = ref("");
 
+const available_moves = ref([]);
+
 onBeforeMount(async () => {
   await getBoard();
 });
@@ -47,8 +49,8 @@ async function getBoard() {
   }
 }
 
-async function updateBoard(from, to) {
-  const url_move = `http://127.0.0.1:8080/move/${from}/${to}`;
+async function updateBoard() {
+  const url_move = `http://127.0.0.1:8080/move/${from.value}/${to.value}`;
   const url_checkmate = `http://127.0.0.1:8080/board/checkmate`;
   try {
     let res = await fetch(url_move);
@@ -66,6 +68,9 @@ async function updateBoard(from, to) {
     }
   } catch (err) {
     error_message.value = err;
+  } finally {
+    from.value="";
+    to.value="";
   }
 }
 
@@ -81,6 +86,19 @@ async function resetBoard(){
     error_message.value = err;
   }
 }
+
+async function show_moves(position){
+  const url = `http://127.0.0.1:8080/move/show/${position}`;
+  console.log(url)
+  try {
+    let res = await fetch(url);
+    let json = await res.json();
+    available_moves.value = json;
+  } catch (err) {
+    console.log(err);
+    error_message.value = err;
+  }
+}
 </script>
 
 <template>
@@ -91,7 +109,7 @@ async function resetBoard(){
       <button
         style="background-color: lightgreen"
         class="btn"
-        @click="from && to ? updateBoard(from, to) : null"
+        @click="from && to ? updateBoard() : null"
       >
         send</button
       ><button
@@ -108,11 +126,13 @@ async function resetBoard(){
   <div style="display: flex" v-for="row in board">
     <Tile
       v-for="ele in row"
+      @click="show_moves(ele.col+ele.row)"
       :ele_symbol="ele.symbol"
       :field_color="ele.field_color"
       :piece_color="ele.piece_color"
       :idValue="ele.col + ele.row"
       :key="ele.col + ele.row"
+      :class="{from_to_highlight:ele.col + ele.row==from || ele.col + ele.row==to,available_move:available_moves.includes(ele.col + ele.row)}"
       :style="ele.col+ele.row ==check? 'background-color:red':''"
       @from="fromFun"
       @to="toFun"
@@ -130,4 +150,25 @@ async function resetBoard(){
   margin-right: 1em;
   cursor: pointer;
 }
+.from_to_highlight{
+  border: solid 1px red;
+  background-color: lightcoral ;
+}
+
+.available_move{
+  position: relative;
+}
+.available_move::before {
+            content: ""; 
+            position: absolute; 
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            opacity: 0.5;
+            border: solid 1px salmon;
+            background-color: lightsalmon ;
+            border-radius: 50%; 
+        }
 </style>
