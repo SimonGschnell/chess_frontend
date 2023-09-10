@@ -1,15 +1,15 @@
 <script setup>
 import Tile from "./Tile.vue";
-import { ref, watchEffect, onBeforeMount } from "vue";
+import { ref, watchEffect, onBeforeMount, computed } from "vue";
 
 const from = ref("");
 const to = ref("");
 const player_turn = ref(null);
-const board = ref(null);
+const board = ref([]);
 const check = ref("");
 const error_message = ref("");
-
 const available_moves = ref([]);
+
 
 onBeforeMount(async () => {
   await getBoard();
@@ -18,10 +18,14 @@ onBeforeMount(async () => {
 function fromFun(id) {
   console.log(id);
   from.value = id;
+  //clean available moves
+  available_moves.value=[]
 }
 function toFun(id) {
   console.log(id);
   to.value = id;
+  //clean available moves
+  available_moves.value=[]
 }
 
 async function getBoard() {
@@ -32,8 +36,8 @@ async function getBoard() {
     let res = await fetch(url);
     let json = await res.json();
     console.log(json);
-    board.value = json;
-
+    board.value = json.board;
+    player_turn.value = json.player_turn;
     //get check data
     let check_res = await fetch(url_check);
     let check_json = await check_res.json();
@@ -89,7 +93,8 @@ async function resetBoard(){
 
 async function show_moves(position){
   const url = `http://127.0.0.1:8080/move/show/${position}`;
-  console.log(url)
+  from.value=""
+  to.value=""
   try {
     let res = await fetch(url);
     let json = await res.json();
@@ -122,8 +127,8 @@ async function show_moves(position){
     </div>
   </div>
   <br />
-  <h3>{{ player_turn }}</h3>
-  <div style="display: flex" v-for="row in board">
+  <p style="display: inline-block;"><h3 style="display: inline;">{{ player_turn }}</h3> to play</p>
+  <div style="display: flex" v-for="(row,index) in board">
     <Tile
       v-for="ele in row"
       @click="show_moves(ele.col+ele.row)"
@@ -137,18 +142,34 @@ async function show_moves(position){
       @from="fromFun"
       @to="toFun"
       >{{ele.symbol }}</Tile>
-      
+      <p class="tileInfo">{{index}}</p>
   </div>
+  
+  <div style="flex-direction: row; display: flex;"><p v-if="board" class="tileInfo" v-for="ele in board['1']">{{ ele.col }}</p></div>
   <p style="color: red;">{{ check?"CHECK":"" }}</p>
   <p :style="error_message=='success'?'color: green;':'color: red;'">{{ error_message }}</p>
 </template>
 <style scoped>
 .btn {
+  
   width: 50px;
   height: 50px;
   border: 1px solid black;
   margin-right: 1em;
   cursor: pointer;
+}
+
+.tileInfo {
+  margin: 0; 
+  display: flex;
+  font-family: monospace;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 50px;
+  border: solid 1px transparent;
+  font-size: 2em;
+  text-align: center;
 }
 .from_to_highlight{
   border: solid 1px red;
