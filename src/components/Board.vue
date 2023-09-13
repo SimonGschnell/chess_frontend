@@ -7,6 +7,7 @@ const to = ref("");
 const player_turn = ref(null);
 const board = ref([]);
 const check = ref("");
+const check_pos = ref("");
 const error_message = ref("");
 const available_moves = ref([]);
 
@@ -42,10 +43,16 @@ async function getBoard() {
     let check_res = await fetch(url_check);
     let check_json = await check_res.json();
     console.log(check_json);
+    if (check_json.is_checkmate){
+      check.value= "CHECKMATE";
+    }
+    else if (check_json.is_check){
+      check.value= "CHECK";
+    }else {check.value= ""}
     if (check_json.pos){
-      check.value = check_json.pos.file + check_json.pos.rank.toString();
+      check_pos.value = check_json.pos.file + check_json.pos.rank.toString();
     }else{
-      check.value = "";
+      check_pos.value = "";
     }
     
   } catch (err) {
@@ -131,7 +138,7 @@ async function show_moves(position){
       :idValue="ele.col + ele.row"
       :key="ele.col + ele.row"
       :class="{from_to_highlight:ele.col + ele.row==from || ele.col + ele.row==to,available_move:available_moves.includes(ele.col + ele.row)}"
-      :style="ele.col+ele.row ==check? 'background-color:red':''"
+      :style="ele.col+ele.row ==check_pos? 'background-color:red':''"
       @from="fromFun"
       @to="toFun"
       >{{ele.symbol }}</Tile>
@@ -139,7 +146,7 @@ async function show_moves(position){
   </div>
   
   <div style="flex-direction: row; display: flex;"><p v-if="board" class="tileInfo" v-for="ele in board['1']">{{ ele.col }}</p></div>
-  <p style="color: red;">{{ check?"CHECK":"" }}</p>
+  <h3 style="font-family: Arial, Helvetica, sans-serif;color: red;">{{ check }}</h3>
   <p :style="error_message=='success'?'color: green;':'color: red;'">{{ error_message }}</p>
 </template>
 <style scoped>
