@@ -55,21 +55,14 @@ async function getBoard() {
 
 async function updateBoard() {
   const url_move = `http://127.0.0.1:8080/move/${from.value}/${to.value}`;
-  const url_checkmate = `http://127.0.0.1:8080/board/checkmate`;
+  
   try {
     let res = await fetch(url_move);
     let json = await res.json();
     error_message.value = json;
 
-    let res_checkmate = await fetch(url_checkmate);
-    let json_checkmate = await res_checkmate.json();
-    console.log(json_checkmate);
-
-    if (json_checkmate.is_checkmate){
-      resetBoard()
-    }else{
       getBoard()
-    }
+   
   } catch (err) {
     error_message.value = err;
   } finally {
